@@ -27,9 +27,9 @@
     "generator"
   ],
   "dependencies": {
-    "gulp-util": "^3.0.0",
-    "juicepress": "^1.0.5",
-    "merge": "^1.1.3",
-    "through": "^2.3.4"
+    "juicepress": "^1.1.0",
+    "gulp-util": "^3.0.7",
+    "merge": "^1.2.0",
+    "through": "^2.3.8"
   }
 }
