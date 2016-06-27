@@ -5,8 +5,7 @@
 
 
 module.exports = function(opt) {
-
-	var through     = require("through");
+	var through     = require("through2");
 	var gutil       = require("gulp-util");
 	var path        = require("path");
 	var PluginError = gutil.PluginError;
@@ -44,7 +43,7 @@ module.exports = function(opt) {
 	}, opt);
 
 
-	function bufferFiles(file) {
+	function bufferFiles(file, encoding, callback) {
 		if (file.isNull()) {
 			return;
 		}
@@ -61,15 +60,16 @@ module.exports = function(opt) {
 			from: file.relative,
 			content: file.contents
 		});
+		callback();
 	}
 
-	function runJuicepress() {
+	function runJuicepress(cb) {
 		var me = this;
 		var juicepress = require("juicepress");
 
 		juicepress(options, files, function(err, htmls) {
 			if (err) {
-				me.emit("error", new PluginError("gulp-juicepress", err.toString()));
+				cb(new PluginError("gulp-juicepress", err.toString()));
 			} else {
 				htmls.forEach(function(html) {
 					var file = new File({
@@ -80,10 +80,10 @@ module.exports = function(opt) {
 					});
 					me.push(file);
 				});
+				cb();
 			}
-			me.emit("end");
 		});
 	}
 
-	return through(bufferFiles, runJuicepress);
+	return through.obj(bufferFiles, runJuicepress);
 };
